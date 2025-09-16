@@ -310,6 +310,30 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - [ ] Mobile app
 - [ ] Enterprise features
 
+## 🚀 Batch Scripts (Windows)
+
+For easy development workflow:
+
+| Script | Purpose | When to Use |
+|--------|---------|-------------|
+| `quick-start.bat` | **Complete setup** - Install, build, setup DB, start apps | **First time only** |
+| `start-apps.bat` | **Start applications** - Check DB, start server & web app | **Daily use** |
+| `start-only.bat` | **Quick start** - Just start apps (assumes everything ready) | **Fastest option** |
+| `stop-apps.bat` | **Stop all** - Kill all Node.js processes and windows | **When done** |
+
+### Usage Examples:
+```bash
+# First time setup
+quick-start.bat
+
+# Daily development
+start-apps.bat
+
+# Quick restart
+stop-apps.bat
+start-only.bat
+```
+
 ---
 
 Built with ❤️ using Next.js, Express.js, Prisma, and OpenAI

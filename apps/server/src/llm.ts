@@ -39,13 +39,17 @@ const getLLMConfig = (): {
 
 const llmConfig = getLLMConfig();
 
-const openai = new OpenAI({
-  apiKey: llmConfig.apiKey,
-  baseURL: llmConfig.baseURL,
-});
-
 // Check if LLM provider is available
 export const isLLMAvailable = llmConfig.apiKey && llmConfig.apiKey !== 'your_api_key_here';
+
+// Initialize OpenAI client only if available
+let openai: OpenAI | null = null;
+if (isLLMAvailable) {
+  openai = new OpenAI({
+    apiKey: llmConfig.apiKey,
+    baseURL: llmConfig.baseURL,
+  });
+}
 
 export interface ChatMessage {
   role: 'user' | 'assistant';
@@ -85,6 +89,10 @@ export class LLMService {
       role: 'user',
       content: userMessage
     });
+
+    if (!openai) {
+      throw new Error('LLM service not available. Please check your API key configuration.');
+    }
 
     try {
       const response = await openai.chat.completions.create({
@@ -138,6 +146,10 @@ export class LLMService {
   }
 
   private async tryExtractStructuredData(): Promise<any | null> {
+    if (!openai) {
+      return null;
+    }
+
     try {
       // Try to extract structured data from the conversation
       const extractionPrompt = `Based on the conversation, extract the required information for a ${this.useCase} form. 

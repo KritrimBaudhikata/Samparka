@@ -55,12 +55,12 @@ echo.
 echo 🚀 Step 6: Starting applications...
 echo.
 echo Starting backend server...
-start "Samparka Server" cmd /k "cd apps\server && npm run dev"
+start "Samparka Server" cmd /k "cd /d %~dp0apps\server && npm run dev"
 
-timeout /t 3 /nobreak > nul
+timeout /t 5 /nobreak > nul
 
 echo Starting web application...
-start "Samparka Web" cmd /k "cd apps\web && npm run dev"
+start "Samparka Web" cmd /k "cd /d %~dp0apps\web && npm run dev"
 
 echo.
 echo ✅ Setup complete! Applications starting...
