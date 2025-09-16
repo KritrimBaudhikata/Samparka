@@ -1,0 +1,23 @@
+{
+  "name": "samparka-ai-forms",
+  "version": "1.0.0",
+  "description": "AI-powered contact forms MVP",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "db:generate": "cd apps/server && npx prisma generate",
+    "db:push": "cd apps/server && npx prisma db push",
+    "db:studio": "cd apps/server && npx prisma studio"
+  },
+  "devDependencies": {
+    "turbo": "^1.10.12",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}

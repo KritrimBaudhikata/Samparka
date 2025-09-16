@@ -1,0 +1,39 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Lead {
+  id        String   @id @default(uuid())
+  useCase   String   // SALES, APPT, SUPPORT
+  payload   String   // JSON string of collected data
+  tags      String   // JSON string of tags array like "priority", "urgent", etc.
+  status    String   @default("NEW") // NEW, SEEN, REPLIED
+  createdAt DateTime @default(now())
+  source    String   @default("demo") // demo, embed:domain.com
+  
+  // Relations
+  conversations Conversation[]
+  
+  @@map("leads")
+}
+
+model Conversation {
+  id           String   @id @default(uuid())
+  leadId       String
+  turns        String   // JSON array of conversation turns
+  modelSummary String   // 2-3 sentence summary
+  createdAt    DateTime @default(now())
+  
+  // Relations
+  lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  
+  @@map("conversations")
+}
