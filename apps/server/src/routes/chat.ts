@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { LLMService, isLLMAvailable, LLM_PROVIDER } from '../llm';
+import { LLMService, getIsLLMAvailable, LLM_PROVIDER } from '../llm';
 import { MockLLMService } from '../llm-mock';
 import { UseCase } from '@samparka/playbooks';
 import { z } from 'zod';
@@ -29,7 +29,7 @@ router.post('/chat', async (req, res) => {
     // Get or create conversation
     let conversation = activeConversations.get(sessionId);
     if (!conversation) {
-      if (isLLMAvailable) {
+      if (getIsLLMAvailable()) {
         console.log(`Using ${LLM_PROVIDER.toUpperCase()} LLM Service`);
         conversation = new LLMService(useCase as UseCase);
       } else {

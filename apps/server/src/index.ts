@@ -6,7 +6,10 @@ import chatRoutes from './routes/chat';
 import leadRoutes from './routes/leads';
 
 // Load environment variables
-dotenv.config();
+dotenv.config({ path: '../../.env' });
+
+// Initialize LLM configuration
+import { getIsLLMAvailable } from './llm';
 
 const app = express();
 const PORT = process.env.PORT || 3001;

@@ -70,7 +70,7 @@ export default function InboxPage() {
 
   useEffect(() => {
     fetchLeads();
-  }, [pagination.page, filters]);
+  }, [pagination.page, filters.useCase, filters.status, filters.search]);
 
   const handleStatusChange = async (leadId: string, newStatus: string) => {
     try {

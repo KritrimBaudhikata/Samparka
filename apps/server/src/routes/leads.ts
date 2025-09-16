@@ -86,8 +86,7 @@ router.get('/', async (req, res) => {
     
     if (search) {
       where.payload = {
-        contains: search,
-        mode: 'insensitive'
+        contains: search
       };
     }
 
