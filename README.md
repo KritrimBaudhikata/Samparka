@@ -12,6 +12,8 @@ Transform your contact forms with conversational AI that collects the right info
 - **Embeddable Widget**: Easy integration into any website
 - **Admin Dashboard**: View, manage, and export leads
 - **Slack Notifications**: Real-time alerts for new submissions
+- **LLM Flexibility**: Easy switching between OpenAI and DeepSeek APIs
+- **Demo Mode**: Works without API keys using mock responses
 
 ## 📋 Prerequisites
 
@@ -31,28 +33,24 @@ Before you begin, ensure you have the following installed:
    cd samparka
    ```
 
-2. **Run the setup script**
+2. **Run the complete setup script**
    ```bash
-   setup.bat
+   quick-start.bat
    ```
-   This will install dependencies, build packages, set up the database, and seed it with sample data.
+   This will install dependencies, build packages, set up the database, and start the applications.
 
-3. **Configure environment variables**
-   Edit `.env` and add your configuration:
-   ```env
-   # LLM Configuration (Required)
-   OPENAI_API_KEY=your_openai_api_key_here
+3. **Configure your LLM provider** (Optional - Demo mode available)
+   ```bash
+   # Copy the template
+   copy env.template .env
    
-   # Database
-   DATABASE_URL="file:./dev.db"
+   # Edit .env and choose your provider:
+   LLM_PROVIDER=deepseek  # or 'openai'
    
-   # Slack Notifications (Optional)
-   SLACK_WEBHOOK_URL=your_slack_webhook_url_here
-   
-   # App Configuration
-   NEXT_PUBLIC_APP_URL=http://localhost:3000
-   NEXT_PUBLIC_API_URL=http://localhost:3001
-   NODE_ENV=development
+   # Add your API key:
+   DEEPSEEK_API_KEY=sk-your-deepseek-key-here
+   # OR
+   OPENAI_API_KEY=sk-your-openai-key-here
    ```
 
 ### Manual Setup
@@ -90,9 +88,12 @@ Before you begin, ensure you have the following installed:
 
 #### Quick Start (Windows)
 ```bash
-start.bat
+# Start applications (checks DB, starts server & web app)
+start-apps.bat
+
+# Or for fastest start (assumes everything is ready)
+start-only.bat
 ```
-This will open two terminal windows - one for the server and one for the web app.
 
 #### Manual Start
 
@@ -189,10 +190,27 @@ samparka/
 
 ## 🔧 Configuration
 
-### OpenAI API Key
+### LLM Provider Setup
 
+#### Option 1: DeepSeek (Recommended)
+1. Get your API key from [DeepSeek Platform](https://platform.deepseek.com/)
+2. Add to your `.env` file:
+   ```env
+   LLM_PROVIDER=deepseek
+   DEEPSEEK_API_KEY=sk-your-deepseek-key-here
+   ```
+
+#### Option 2: OpenAI (Alternative)
 1. Get your API key from [OpenAI Platform](https://platform.openai.com/api-keys)
-2. Add it to your `.env` file as `OPENAI_API_KEY`
+2. Add to your `.env` file:
+   ```env
+   LLM_PROVIDER=openai
+   OPENAI_API_KEY=sk-your-openai-key-here
+   ```
+
+#### Option 3: Demo Mode (No API Key)
+- Leave API keys empty in `.env`
+- System will use mock responses for demonstration
 
 ### Slack Notifications
 
@@ -283,9 +301,10 @@ This project is licensed under the MIT License - see the LICENSE file for detail
    - Ensure SQLite file permissions are correct
    - Run `npm run db:push` to recreate tables
 
-2. **OpenAI API errors**
-   - Verify your API key is correct
-   - Check your OpenAI account has sufficient credits
+2. **LLM API errors**
+   - Verify your API key is correct for the selected provider
+   - Check your account has sufficient credits
+   - Try switching to demo mode by removing API keys
 
 3. **Widget not loading**
    - Ensure the server is running on the correct port
@@ -294,6 +313,10 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 4. **Slack notifications not working**
    - Verify webhook URL is correct
    - Check Slack app permissions
+
+5. **Port already in use**
+   - Use `stop-apps.bat` to kill all Node.js processes
+   - Or manually kill processes using `taskkill /f /im node.exe`
 
 ### Getting Help
 
@@ -334,6 +357,24 @@ stop-apps.bat
 start-only.bat
 ```
 
+## 🔒 Security & Privacy
+
+### Focused .gitignore
+The project includes a focused `.gitignore` that protects:
+- **Environment files** (`.env`, `.env.local`) - API keys and secrets
+- **Database files** (`*.db`, `*.sqlite`) - Actual data
+- **Build outputs** (`dist/`, `.next/`) - Compiled code
+- **Dependencies** (`node_modules/`) - Package files
+- **Logs and cache** - Debug information
+- **IDE and OS files** - System-specific files
+
+### What's Tracked
+- ✅ Source code (`.ts`, `.tsx`, `.js`)
+- ✅ Configuration files (`package.json`, `tsconfig.json`)
+- ✅ Documentation (`README.md`, guides)
+- ✅ Batch scripts for development
+- ✅ Prisma schema (but not the database)
+
 ---
 
-Built with ❤️ using Next.js, Express.js, Prisma, and OpenAI
+Built with ❤️ using Next.js, Express.js, Prisma, and AI (OpenAI/DeepSeek)
