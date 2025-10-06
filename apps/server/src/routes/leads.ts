@@ -76,15 +76,15 @@ router.get('/', async (req, res) => {
 
     const where: any = {};
     
-    if (useCase) {
+    if (useCase && useCase !== 'undefined') {
       where.useCase = useCase;
     }
     
-    if (status) {
+    if (status && status !== 'undefined') {
       where.status = status;
     }
     
-    if (search) {
+    if (search && search !== 'undefined') {
       where.payload = {
         contains: search
       };

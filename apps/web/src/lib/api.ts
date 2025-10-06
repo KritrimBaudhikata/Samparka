@@ -30,6 +30,10 @@ export interface Lead {
   status: string;
   createdAt: string;
   source: string;
+  conversations?: Array<{
+    modelSummary: string;
+    createdAt: string;
+  }>;
 }
 
 export interface LeadsResponse {
@@ -93,8 +97,18 @@ export class ApiClient {
     const params = new URLSearchParams({
       page: page.toString(),
       limit: limit.toString(),
-      ...filters,
     });
+
+    // Only add filter parameters if they have actual values
+    if (filters?.useCase) {
+      params.append('useCase', filters.useCase);
+    }
+    if (filters?.status) {
+      params.append('status', filters.status);
+    }
+    if (filters?.search) {
+      params.append('search', filters.search);
+    }
 
     const response = await fetch(`${this.baseUrl}/api/leads?${params}`);
     return response.json();

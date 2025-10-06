@@ -29,7 +29,7 @@ export const ServiceAppointmentSchema = z.object({
   preferredDate: z.string().min(1, "Preferred date is required"),
   preferredTime: z.string().min(1, "Preferred time is required"),
   timezone: z.string().min(1, "Timezone is required"),
-  location: z.enum(['in-person', 'online']),
+  location: z.string().min(1, "Location is required"),
   notes: z.string().optional(),
 });
 

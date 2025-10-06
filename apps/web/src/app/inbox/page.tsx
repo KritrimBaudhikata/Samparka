@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Download, Filter, Search, Eye, MessageSquare, Calendar, Headphones, CheckCircle, Clock, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Download, Filter, Search, Eye, MessageSquare, Calendar, Headphones, CheckCircle, Clock, AlertCircle, ChevronDown, ChevronRight } from 'lucide-react';
 import { apiClient, Lead } from '@/lib/api';
 import Link from 'next/link';
 
@@ -32,6 +32,7 @@ const statusColors = {
 export default function InboxPage() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
+  const [expandedLeads, setExpandedLeads] = useState<Set<string>>(new Set());
   const [filters, setFilters] = useState({
     useCase: '',
     status: '',
@@ -83,6 +84,27 @@ export default function InboxPage() {
     } catch (error) {
       console.error('Failed to update status:', error);
     }
+  };
+
+  const toggleExpanded = (leadId: string) => {
+    const newExpanded = new Set(expandedLeads);
+    if (newExpanded.has(leadId)) {
+      newExpanded.delete(leadId);
+    } else {
+      newExpanded.add(leadId);
+    }
+    setExpandedLeads(newExpanded);
+  };
+
+  const formatFieldName = (key: string) => {
+    return key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+  };
+
+  const formatFieldValue = (key: string, value: any) => {
+    if (typeof value === 'object' && value !== null) {
+      return JSON.stringify(value, null, 2);
+    }
+    return String(value);
   };
 
   const handleExport = async () => {
@@ -296,61 +318,122 @@ export default function InboxPage() {
                 const UseCaseIcon = useCaseIcons[lead.useCase as keyof typeof useCaseIcons];
                 const StatusIcon = statusIcons[lead.status as keyof typeof statusIcons];
                 
+                const isExpanded = expandedLeads.has(lead.id);
+                
                 return (
-                  <div key={lead.id} className="p-6 hover:bg-gray-50">
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-start space-x-4 flex-1">
-                        <div className={`p-2 rounded-lg ${useCaseColors[lead.useCase as keyof typeof useCaseColors]}`}>
-                          <UseCaseIcon className="h-5 w-5" />
+                  <div key={lead.id} className="border-b border-gray-200">
+                    <div className="p-6 hover:bg-gray-50 cursor-pointer" onClick={() => toggleExpanded(lead.id)}>
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-start space-x-4 flex-1">
+                          <div className={`p-2 rounded-lg ${useCaseColors[lead.useCase as keyof typeof useCaseColors]}`}>
+                            <UseCaseIcon className="h-5 w-5" />
+                          </div>
+                          
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center space-x-2 mb-1">
+                              <h3 className="text-lg font-medium text-gray-900 truncate">
+                                {getLeadTitle(lead)}
+                              </h3>
+                              <span className={`px-2 py-1 text-xs rounded-full ${useCaseColors[lead.useCase as keyof typeof useCaseColors]}`}>
+                                {lead.useCase}
+                              </span>
+                            </div>
+                            
+                            <p className="text-gray-600 text-sm mb-2 line-clamp-2">
+                              {getLeadDescription(lead)}
+                            </p>
+                            
+                            <div className="flex items-center space-x-4 text-xs text-gray-500">
+                              <span>{formatDate(lead.createdAt)}</span>
+                              <span>•</span>
+                              <span>Source: {lead.source}</span>
+                              {lead.tags.length > 0 && (
+                                <>
+                                  <span>•</span>
+                                  <div className="flex space-x-1">
+                                    {lead.tags.map((tag, index) => (
+                                      <span key={index} className="px-1 py-0.5 bg-gray-100 text-gray-600 rounded">
+                                        {tag}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </>
+                              )}
+                            </div>
+                          </div>
                         </div>
                         
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center space-x-2 mb-1">
-                            <h3 className="text-lg font-medium text-gray-900 truncate">
-                              {getLeadTitle(lead)}
-                            </h3>
-                            <span className={`px-2 py-1 text-xs rounded-full ${useCaseColors[lead.useCase as keyof typeof useCaseColors]}`}>
-                              {lead.useCase}
-                            </span>
-                          </div>
-                          
-                          <p className="text-gray-600 text-sm mb-2 line-clamp-2">
-                            {getLeadDescription(lead)}
-                          </p>
-                          
-                          <div className="flex items-center space-x-4 text-xs text-gray-500">
-                            <span>{formatDate(lead.createdAt)}</span>
-                            <span>•</span>
-                            <span>Source: {lead.source}</span>
-                            {lead.tags.length > 0 && (
-                              <>
-                                <span>•</span>
-                                <div className="flex space-x-1">
-                                  {lead.tags.map((tag, index) => (
-                                    <span key={index} className="px-1 py-0.5 bg-gray-100 text-gray-600 rounded">
-                                      {tag}
-                                    </span>
-                                  ))}
-                                </div>
-                              </>
+                        <div className="flex items-center space-x-2">
+                          <select
+                            value={lead.status}
+                            onChange={(e) => {
+                              e.stopPropagation();
+                              handleStatusChange(lead.id, e.target.value);
+                            }}
+                            className={`text-xs px-2 py-1 rounded-full border-0 ${statusColors[lead.status as keyof typeof statusColors]}`}
+                            aria-label={`Change status for ${getLeadTitle(lead)}`}
+                          >
+                            <option value="NEW">New</option>
+                            <option value="SEEN">Seen</option>
+                            <option value="REPLIED">Replied</option>
+                          </select>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleExpanded(lead.id);
+                            }}
+                            className="p-1 hover:bg-gray-200 rounded"
+                            aria-label={isExpanded ? "Collapse details" : "Expand details"}
+                          >
+                            {isExpanded ? (
+                              <ChevronDown className="h-4 w-4 text-gray-500" />
+                            ) : (
+                              <ChevronRight className="h-4 w-4 text-gray-500" />
                             )}
-                          </div>
+                          </button>
                         </div>
                       </div>
-                      
-                      <div className="flex items-center space-x-2">
-                        <select
-                          value={lead.status}
-                          onChange={(e) => handleStatusChange(lead.id, e.target.value)}
-                          className={`text-xs px-2 py-1 rounded-full border-0 ${statusColors[lead.status as keyof typeof statusColors]}`}
-                          aria-label={`Change status for ${getLeadTitle(lead)}`}
-                        >
-                          <option value="NEW">New</option>
-                          <option value="SEEN">Seen</option>
-                          <option value="REPLIED">Replied</option>
-                        </select>
-                      </div>
                     </div>
+                    
+                    {isExpanded && (
+                      <div className="px-6 pb-6 bg-gray-50 border-t border-gray-100">
+                        <div className="pt-4">
+                          <h4 className="text-sm font-medium text-gray-900 mb-3">Submitted Information</h4>
+                          <dl className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {Object.entries(lead.payload).map(([key, value]) => (
+                              <div key={key} className="bg-white p-3 rounded-lg border">
+                                <dt className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                                  {formatFieldName(key)}
+                                </dt>
+                                <dd className="mt-1 text-sm text-gray-900">
+                                  {typeof value === 'object' && value !== null ? (
+                                    <pre className="whitespace-pre-wrap text-xs bg-gray-100 p-2 rounded">
+                                      {formatFieldValue(key, value)}
+                                    </pre>
+                                  ) : (
+                                    <span className="break-words">{formatFieldValue(key, value)}</span>
+                                  )}
+                                </dd>
+                              </div>
+                            ))}
+                          </dl>
+                          
+                          {lead.conversations && lead.conversations.length > 0 && (
+                            <div className="mt-4">
+                              <h4 className="text-sm font-medium text-gray-900 mb-3">Conversation Summary</h4>
+                              <div className="bg-white p-3 rounded-lg border">
+                                <p className="text-sm text-gray-600">
+                                  {lead.conversations[0].modelSummary}
+                                </p>
+                                <p className="text-xs text-gray-500 mt-2">
+                                  Created: {new Date(lead.conversations[0].createdAt).toLocaleString()}
+                                </p>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 );
               })}

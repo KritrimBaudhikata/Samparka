@@ -40,12 +40,18 @@ timeout /t 3 /nobreak > nul
 echo Starting web application...
 start "Samparka Web" cmd /k "cd /d %~dp0apps\web && npm run dev"
 
+timeout /t 3 /nobreak > nul
+
+echo Starting Prisma Studio...
+start "Prisma Studio" cmd /k "cd /d %~dp0apps\server && npm run db:studio"
+
 echo.
 echo ✅ Applications starting...
 echo.
 echo 🌐 Demo website: http://localhost:3000
 echo 📊 Admin inbox: http://localhost:3000/inbox
 echo 🔧 API health: http://localhost:3001/health
+echo 🗄️ Database viewer: http://localhost:5555
 echo.
 echo 📝 Note: It may take a few seconds for the applications to fully start.
 echo.

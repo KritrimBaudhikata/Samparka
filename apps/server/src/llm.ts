@@ -242,7 +242,12 @@ export class LLMService {
       IMPORTANT: Map values to the correct enum options:
       - For budgetBand: Map to one of: '<$5k', '$5k-$25k', '$25k-$100k', '>$100k', 'Not sure'
       - For urgency: Map to one of: 'ASAP', '2-4 weeks', 'Just browsing'
-      - For teamSize: Map to one of: '<5', '5-20', '21-50', '51-200', '>200'
+      - For teamSize: Map to one of: '1-5', '6-20', '21-50', '51-200', '200+'
+      
+      FOR SERVICE APPOINTMENTS (APPT):
+      - Include phone field if mentioned (it's optional)
+      - Location can be any text description (e.g., "Mong Kok area", "Central Hong Kong")
+      - Include all collected information in the JSON
       
       CRITICAL: If you can extract ALL required fields from the conversation, return the JSON object. 
       If any field is missing or unclear, return null.

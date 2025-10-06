@@ -46,8 +46,6 @@ export default function HomePage() {
   const resetDemo = () => {
     setCollectedData(null);
     setIsComplete(false);
-    // Force re-render of chat interface
-    setActiveUseCase(activeUseCase);
   };
 
   return (
@@ -114,7 +112,7 @@ export default function HomePage() {
 
           {/* Use Case Tabs */}
           <div className="flex justify-center mb-8">
-            <div className="bg-white rounded-lg p-1 shadow-sm border">
+            <div className="bg-white rounded-lg p-1 shadow-sm border flex">
               {useCases.map((useCase) => {
                 const Icon = useCase.icon;
                 return (
@@ -124,7 +122,7 @@ export default function HomePage() {
                       setActiveUseCase(useCase.id);
                       resetDemo();
                     }}
-                    className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-colors ${
+                    className={`flex items-center space-x-2 px-6 py-3 rounded-md transition-colors whitespace-nowrap ${
                       activeUseCase === useCase.id
                         ? 'bg-primary-600 text-white'
                         : 'text-gray-600 hover:bg-gray-100'
@@ -143,6 +141,7 @@ export default function HomePage() {
             {/* Chat Interface */}
             <div className="h-96 lg:h-[600px]">
               <ChatInterface 
+                key={activeUseCase}
                 useCase={activeUseCase} 
                 onComplete={handleComplete}
               />
@@ -253,14 +252,110 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-white border-t py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center text-gray-600">
-            <p>&copy; 2024 Samparka. AI-Powered Contact Forms.</p>
+        {/* Embed Section */}
+        <section id="embed" className="bg-white py-16">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                Embed Samparka on Your Website
+              </h2>
+              <p className="text-lg text-gray-600">
+                Add AI-powered contact forms to your website with just a few lines of code.
+              </p>
+            </div>
+
+            <div className="bg-gray-50 rounded-lg p-8 mb-8">
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">Step 1: Include the Widget Script</h3>
+              <div className="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+                <pre className="text-green-400 text-sm">
+                  <code>{`<script src="http://localhost:3001/widget/samparka-widget.js"></script>`}</code>
+                </pre>
+              </div>
+            </div>
+
+            <div className="bg-gray-50 rounded-lg p-8 mb-8">
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">Step 2: Initialize the Widget</h3>
+              <div className="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+                <pre className="text-green-400 text-sm">
+                  <code>{`<script>
+  const widget = new SamparkaWidget({
+    apiUrl: 'http://localhost:3001',
+    useCase: 'SALES', // or 'APPT', 'SUPPORT'
+    source: 'your-website'
+  });
+</script>`}</code>
+                </pre>
+              </div>
+            </div>
+
+            <div className="bg-blue-50 rounded-lg p-8">
+              <h3 className="text-xl font-semibold text-blue-900 mb-4">Available Use Cases</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="text-center">
+                  <div className="bg-blue-100 rounded-lg p-4 mb-3">
+                    <MessageSquare className="h-8 w-8 text-blue-600 mx-auto" />
+                  </div>
+                  <h4 className="font-semibold text-blue-900 mb-2">SALES</h4>
+                  <p className="text-sm text-blue-700">B2B SaaS lead collection and qualification</p>
+                </div>
+                <div className="text-center">
+                  <div className="bg-green-100 rounded-lg p-4 mb-3">
+                    <Calendar className="h-8 w-8 text-green-600 mx-auto" />
+                  </div>
+                  <h4 className="font-semibold text-green-900 mb-2">APPT</h4>
+                  <p className="text-sm text-green-700">Service appointments and bookings</p>
+                </div>
+                <div className="text-center">
+                  <div className="bg-orange-100 rounded-lg p-4 mb-3">
+                    <Headphones className="h-8 w-8 text-orange-600 mx-auto" />
+                  </div>
+                  <h4 className="font-semibold text-orange-900 mb-2">SUPPORT</h4>
+                  <p className="text-sm text-orange-700">Technical support and issue reporting</p>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </footer>
+        </section>
+
+        {/* Footer */}
+        <footer className="py-12" style={{ backgroundColor: '#111827' }}>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-4">About Samparka</h3>
+                <p className="text-gray-300 mb-4">
+                  Samparka AI is a product of <strong>Kritrim Baudhikata Anusandhan Kendra Nepal</strong>.
+                </p>
+                <p className="text-gray-300 mb-4">
+                  Advancing AI research and innovation in Nepal.
+                </p>
+                <div className="text-gray-300">
+                  <p><strong>Contact Us</strong></p>
+                  <p>ekatabasti, budhanilakantha-09, kathmandu</p>
+                  <p>+852 63451395</p>
+                  <p>people@kribaat.com / kritirim.baudhikta@gmail.com</p>
+                  <p className="mt-2">
+                    <a href="https://kritrimbaudhikata.com/en" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">
+                      Visit our website
+                    </a>
+                  </p>
+                </div>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-4">Quick Links</h3>
+                <ul className="space-y-2 text-gray-300">
+                  <li><a href="/inbox" className="hover:text-blue-400 transition-colors">Admin Inbox</a></li>
+                  <li><a href="#embed" className="hover:text-blue-400 transition-colors">Embed Code</a></li>
+                  <li><a href="http://localhost:3001/health" className="hover:text-blue-400 transition-colors">API Health</a></li>
+                  <li><a href="http://localhost:5555" className="hover:text-blue-400 transition-colors">Database Viewer</a></li>
+                </ul>
+              </div>
+            </div>
+            <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+              <p>&copy; 2025 Kritim Baudikata Anusandhan Kendra Nepal. All rights reserved.</p>
+            </div>
+          </div>
+        </footer>
     </div>
   );
 }
