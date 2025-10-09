@@ -166,7 +166,7 @@ export default function InboxPage() {
       {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
+          <div className="flex gap-4 justify-between items-center py-6">
             <div className="flex items-center space-x-4">
               <Link href="/" className="text-gray-600 hover:text-gray-900">
                 <ArrowLeft className="h-5 w-5" />
@@ -324,14 +324,14 @@ export default function InboxPage() {
                   <div key={lead.id} className="border-b border-gray-200">
                     <div className="p-6 hover:bg-gray-50 cursor-pointer" onClick={() => toggleExpanded(lead.id)}>
                       <div className="flex items-start justify-between">
-                        <div className="flex items-start space-x-4 flex-1">
+                        <div className="flex items-start space-x-4 flex-1 min-w-0">
                           <div className={`p-2 rounded-lg ${useCaseColors[lead.useCase as keyof typeof useCaseColors]}`}>
                             <UseCaseIcon className="h-5 w-5" />
                           </div>
                           
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center space-x-2 mb-1">
-                              <h3 className="text-lg font-medium text-gray-900 truncate">
+                              <h3 className="text-lg font-medium text-gray-900 truncate" title={getLeadTitle(lead)}>
                                 {getLeadTitle(lead)}
                               </h3>
                               <span className={`px-2 py-1 text-xs rounded-full ${useCaseColors[lead.useCase as keyof typeof useCaseColors]}`}>
@@ -339,11 +339,11 @@ export default function InboxPage() {
                               </span>
                             </div>
                             
-                            <p className="text-gray-600 text-sm mb-2 line-clamp-2">
+                            <p className="text-gray-600 text-sm mb-2 line-clamp-2" title={getLeadDescription(lead)}>
                               {getLeadDescription(lead)}
                             </p>
                             
-                            <div className="flex items-center space-x-4 text-xs text-gray-500">
+                            <div className="flex flex-col sm:flex-row items-center space-x-4 text-xs text-gray-500">
                               <span>{formatDate(lead.createdAt)}</span>
                               <span>•</span>
                               <span>Source: {lead.source}</span>

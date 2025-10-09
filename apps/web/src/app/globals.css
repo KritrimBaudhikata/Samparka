@@ -20,7 +20,6 @@
   .input-field {
     @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent;
   }
-  
   .chat-bubble {
     @apply max-w-xs lg:max-w-md px-4 py-2 rounded-lg;
   }
